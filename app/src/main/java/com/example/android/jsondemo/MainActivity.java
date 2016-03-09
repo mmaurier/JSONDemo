@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,7 +54,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.i("Website content: ", result);
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String weatherInfo = jsonObject.getString("weather");
+                Log.i("Website content: ", result);
+                Log.i("weather info: ", weatherInfo );
+                JSONArray arr = new JSONArray(weatherInfo);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject jsonPart = arr.getJSONObject(i);
+                    Log.i("main ", jsonPart.getString("main"));
+                    Log.i("desc ", jsonPart.getString("description"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
     @Override
@@ -70,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DownloadTask task =  new DownloadTask();
-        task.execute("http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=44db6a862fba0b067b1930da0d769e98");
+        task.execute("http://api.openweathermap.org/data/2.5/weather?q=Miami,us&appid=44db6a862fba0b067b1930da0d769e98");
 
     }
 
